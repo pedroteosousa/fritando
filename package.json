@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "notes": "./bin/index.js"
+  },
   "scripts": {
     "start": "node index"
   },
@@ -18,6 +21,8 @@
   },
   "homepage": "https://github.com/pedroteosousa/fritando#readme",
   "dependencies": {
-    "cf-api-wrapper": "^1.0.2"
+    "cf-api-wrapper": "^1.0.2",
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0"
   }
 }
