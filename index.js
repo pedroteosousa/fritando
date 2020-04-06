@@ -11,16 +11,22 @@ program
     .usage('[options] <file ...>')
     .option('-s, --size <n>', 'amount of contests to consider', parseInt)
     .option('-h, --handles <items>', 'list of user handles', (list) => list.split(','))
+    .option('-g, --gym', 'consider only gym contests')
     .parse(process.argv)
 
 const getURL = id => {
-    return 'https://codeforces.com/contest/' + id
+    var baseURL = 'https://codeforces.com/';
+    if(program.gym)
+        baseURL += "gym/";
+    else
+        baseURL += "contest/";
+    return baseURL + id;
 }
 
-const retryCall = (call) => {
+const retryCall = (call, params) => {
     return promiseRetry((retry, number) => {
         return new Promise((resolve, reject) => {
-            call().then(data => {
+            call(params).then(data => {
                 if (data.status === undefined) {
                     reject()
                 } else {
@@ -37,7 +43,7 @@ const getGoodContests = (size, handles) => {
         format: '[{bar}] {percentage}% | {value}/{total}',
     })
     bar.start(handles.length + 1, 0)
-    return retryCall(codeforces.contest.list).then(data => data.result.reduce((contest_ids, contest) => {
+    return retryCall(codeforces.contest.list, {gym: program.gym}).then(data => data.result.reduce((contest_ids, contest) => {
         if (contest.relativeTimeSeconds > 0)
             return [...contest_ids, {
                 name: contest.name,
